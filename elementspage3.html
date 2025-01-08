@@ -1,0 +1,779 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title> JP Prudenciado Portfolio </title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/elements.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<link rel="icon" href="images/logo2.png" type="image/png" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Page Wrapper -->
+			<div id="page-wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="elementspage3.html">JP</a></h1>
+						<nav>
+							<a href="#menu">Menu</a>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<div class="inner">
+							<h2>Menu</h2>
+							<ul class="links">
+								<li><a href="index.html#banner">Home</a></li>
+								<li><a href="index.html#one">About Me</a></li>
+								<li><a href="index.html#two">Data Journey</a></li>
+								<li><a href="index.html#three">Resume</a></li>
+								<li><a href="index.html#four">Projects</a></li>
+								<li><a href="index.html#footer">Contact</a></li>
+							</ul>
+							<a href="#" class="close">Close</a>
+						</div>
+					</nav>
+
+				<!-- Wrapper -->
+					<section id="wrapper">
+						<header>
+							<div class="inner">
+								<h2>Data Journey</h2>
+								<p> 
+									Here, I turn raw data into useful insights with tools like Excel, SQL, and Power BI. 
+									Through analysis, visuals, and problem-solving, I work on exciting projects, create smart solutions, and keep building my skills!
+								</p>
+							</div>
+						</header>
+
+						<!-- Content -->
+							<div class="wrapper">
+								<div class="inner">
+
+									<section>
+										<h4> <a href="https://github.com/PrudenciadoJP/My_Project_Bike_Sales_Analysis.git"> </a>
+
+											<h3 class="major"> Bike Sales Analysis </h3>
+
+									<!-- Content hide
+										<p>This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
+										This is <sup>superscript</sup> text and this is <sub>subscript</sub> text.
+										This is <u>underlined</u> and this is code: <code>for (;;) { ... }</code>. Finally, <a href="#">this is a link</a>.</p>
+										<h4>Blockquote</h4>
+										<blockquote>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan faucibus. Vestibulum ante ipsum primis in faucibus lorem ipsum dolor sit amet nullam adipiscing eu felis.</blockquote>
+									-->
+									<!-- Content hide
+										<h4>Preformatted</h4>
+										<pre><code>
+i = 0;
+
+while (!deck.isInOrder()) {
+  print 'Iteration ' + i;
+  deck.shuffle();
+  i++;
+}
+
+print 'It took ' + i + ' iterations to sort the deck.';
+</code></pre>
+-->
+							<section>
+								<div class="box alt">
+									<div class="row gtr-uniform">
+										<div class="col-12"><span class="image fit"><img src="images/Bike sales.gif" alt="" /></span></div>
+									</div>
+								</div>
+							</section>
+
+							<h4 class="major"> Data Cleaning Using MySQL Workbench </h4>
+
+<p> After Doing the data cleaning in Excel, I also did cleaning in SQL to double-check if any data needed to be cleaned.</p>
+<pre><code>
+	DROP DATABASE IF EXISTS Bike_sale_analysis;
+	CREATE DATABASE Bike_sale_analysis; -- Creating database
+	USE Bike_sale_analysis;
+	CREATE TABLE bike_sale_Staging -- Creating table
+	LIKE bike_sale_worksheet;
+	INSERT INTO bike_sale_Staging -- Inserting data in the table
+	SELECT *
+	FROM bike_sale_worksheet;
+	DELIMITER // -- creating stored procedure for faster data viewing
+	CREATE PROCEDURE select_bike_sale_staging () BEGIN
+	SELECT *
+	FROM bike_sale_staging; END //
+	DELIMITER ;
+	-- Data Cleaning
+	ALTER TABLE bike_sale_staging – changing the column name
+	RENAME COLUMN `ï»¿ID` TO id;
+	CALL select_bike_sale_staging();
+</code></pre>
+
+										<h4> Explanatory Data Analysis Using MySQL Workbench</h4>
+										<u> See Full Project </a> </u> </h4>
+
+<p> Provides the age range (minimum, maximum, and average age) for customers in each marital status category. </p>
+<pre><code>
+	-- Table Analysis
+	-- Demographics
+	-- What is the gender distribution across the dataset?
+	SELECT gender,
+		   COUNT(gender) AS count_gender
+	FROM bike_sale_explanatory_analysis
+	WHERE gender IS NOT NULL
+	GROUP BY gender;
+	-- Female	501
+	-- Male	525
+	 -- What is the age range of customers in each marital status category?
+	SELECT `Marital Status`,
+		   MIN(Age) AS 'Min Age',
+		   MAX(Age) AS 'Max Age',
+		   AVG(Age) AS 'Average Age'
+	FROM bike_sale_explanatory_analysis
+	GROUP BY `Marital Status`;
+	-- Married	25	89	46.3570
+	-- Single	25	78	41.5849
+</code></pre>
+
+<p> Determines the percentage of bike purchases within each marital status group. </p>
+<pre><code>
+	-- Purchasing Trends
+	-- What percentage of each demographic group (e.g., Gender, Marital Status) purchased a bike?
+	WITH cte AS
+	 (SELECT gender,
+			 COUNT(gender) AS total_customer,
+			 COUNT(CASE
+					   WHEN `Purchased Bike` = 'Yes' THEN 1
+				   END) AS Num_Purchased_Bike
+	  FROM bike_sale_explanatory_analysis
+	  GROUP BY gender)
+	SELECT gender,
+		   total_customer,
+		   Num_Purchased_Bike,
+		   ROUND(((Num_Purchased_Bike / total_customer) * 100), 2) AS Percentage_Purchased_Gender
+	FROM cte;
+	
+	WITH cte AS
+	 (SELECT `Marital Status`,
+			 COUNT(`Marital Status`) AS total_customer,
+			 COUNT(CASE
+					   WHEN `Purchased Bike` = 'Yes' THEN 1
+				   END) AS Num_Purchased_Bike
+	  FROM bike_sale_explanatory_analysis
+	  GROUP BY `Marital Status`)
+	SELECT `Marital Status`,
+		   total_customer,
+		   Num_Purchased_Bike,
+		   ROUND(((Num_Purchased_Bike / total_customer) * 100), 2) AS Percentage_Purchased_MaritalStatus
+	FROM cte;
+	-- Is there a trend in bike purchases across different income brackets?
+	-- Yes Male intend to buy more bike than female customer
+	-- Single intend to buy more bike than married customer
+</code></pre>
+
+<p> Identifies the number of bike buyers in each region and determines which region has the highest count. </p>
+<pre><code>
+	-- Regional Insights
+	-- Which region has the highest proportion of bike buyers?
+	SELECT 	Region,
+			COUNT(`Purchased Bike`) AS bike_purchased
+	FROM bike_sale_explanatory_analysis
+	WHERE `Purchased Bike` = 'Yes'
+	GROUP BY Region;
+	-- Pacific	119
+	-- Europe	156
+	-- North America	220
+	-- North America has the highest proportion of bike buyers
+	
+	-- How does commute distance vary by region?
+	SELECT 	Region,
+			MIN(`Commute Distance`) AS min_commute_distance,
+			MAX(`Commute Distance`) AS max_commute_distance,
+			ROUND(AVG(`Commute Distance`), 2) AS avg_commute_distance
+	FROM bike_sale_explanatory_analysis
+	GROUP BY Region;
+	-- Europe	0-1 Miles	More Than 10 Miles	0.67
+	-- Pacific	0-1 Miles	More Than 10 Miles	2.05
+	-- North America	0-1 Miles	More Than 10 Miles	1.69
+</code></pre>
+
+<p> Understand the income profiles of customers who purchased or did not purchase a bike. Identify income brackets where bike purchases are most common, enabling targeted financial or marketing strategies. </p>
+<pre><code>
+	-- Financial Analysis
+	-- What is the income distribution of customers who purchased a bike versus those who didn’t?
+	SELECT `Purchased Bike`,
+		   MIN(Income) AS min_income,
+		   MAX(Income) AS max_income,
+		   AVG(Income) AS avg_income,
+		   ROUND(STDDEV(Income)) AS standard_dev_income
+	FROM bike_sale_explanatory_analysis
+	GROUP BY `Purchased Bike`;
+	
+	-- Median
+	WITH RankedData AS
+	 (SELECT `Purchased Bike`,
+			 Income,
+			 ROW_NUMBER() OVER (PARTITION BY `Purchased Bike`
+								ORDER BY Income) AS RowNum,
+			 COUNT(*) OVER (PARTITION BY `Purchased Bike`) AS TotalCount
+	  FROM bike_sale_explanatory_analysis),
+		 median AS
+	 (SELECT `Purchased Bike`,
+			 AVG(Income) AS MedianIncome
+	  FROM RankedData AS rd
+	  WHERE RowNum IN (FLOOR((TotalCount + 1) / 2),
+					   CEIL((TotalCount + 1) / 2))
+	  GROUP BY rd.`Purchased Bike`)
+	SELECT b.`Purchased Bike`,
+		   MIN(b.Income) AS min_income,
+		   MAX(b.Income) AS max_income,
+		   AVG(b.Income) AS avg_income,
+		   ROUND(STDDEV(Income)) AS standard_dev_income,
+		   m.MedianIncome
+	FROM bike_sale_explanatory_analysis AS b
+	INNER JOIN median AS m ON b.`Purchased Bike` = m.`Purchased Bike`
+	GROUP BY b.`Purchased Bike`;
+	•	Counts the number of customers in each combination of car ownership status and bike purchase decision.
+	-- Does owning a car affect the likelihood of purchasing a bike?
+	WITH cte AS
+	 (SELECT `Purchased Bike`,
+			 CASE
+				 WHEN cars = 0 THEN 'No Cars'
+				 WHEN cars >= 1 THEN 'Have Cars'
+			 END AS cars
+	  FROM bike_sale_explanatory_analysis)
+	SELECT `Purchased Bike`,
+		   cars,
+		   COUNT(*) AS num_of_customer
+	FROM cte
+	GROUP BY `Purchased Bike`,
+			 cars
+	ORDER BY num_of_customer DESC;
+	
+	-- owning a car does affect the likelihood of purchasing a bike
+</code></pre>
+
+<p>This SQL query investigates how the number of children influences bike purchases by categorizing customers into groups based on whether they have children or not and analyzing their bike purchase behavior.</p>
+<pre><code>
+	-- Lifestyle Factors
+	-- How does the number of children influence bike purchases?
+	WITH cte AS
+	 (SELECT `Purchased Bike`,
+			 CASE
+				 WHEN Children = 0 THEN 'No children'
+				 WHEN Children >= 1 THEN 'Have children'
+			 END AS children
+	  FROM bike_sale_explanatory_analysis)
+	SELECT `Purchased Bike`,
+		   children,
+		   num_of_purchased,
+		   ROUND((num_of_purchased / SUM(num_of_purchased) OVER (PARTITION BY children)) * 100, 2) AS percentage
+	FROM
+	 (SELECT `Purchased Bike`,
+			 children,
+			 COUNT(*) AS num_of_purchased
+	  FROM cte
+	  GROUP BY `Purchased Bike`,
+			   children
+	  ORDER BY `Purchased Bike` DESC) AS TEMP;
+	
+	-- No	Have children	388
+	-- Yes	Have children	349
+	-- Yes	No children	146
+	-- No	No children	143
+	-- Having children does influence bike purchases
+	•	This SQL query analyzes the relationship between commute distances and bike purchases to identify which commute distances are most common among bike purchasers.
+	-- What commute distances are most common among bike purchasers?
+	SELECT `Commute Distance`,
+		   COUNT(`Purchased Bike`) AS num_purchased
+	FROM bike_sale_explanatory_analysis
+	WHERE `Purchased Bike` = 'Yes'
+	GROUP BY `Commute Distance`
+	ORDER BY num_purchased DESC;
+	
+	-- 0-1 Miles are the most common among bike purchasers
+	-- 0-1 Miles	207
+	-- 2-5 Miles	95
+	-- 1-2 Miles	83
+	-- 5-10 Miles	77
+	-- More Than 10 Miles	33
+</code></pre>
+
+<p>This SQL query investigates the relationship between education levels and bike purchases by analyzing the distribution of purchases among customers with different education levels.</p>
+<pre><code>
+	-- Education and Occupation
+	-- What is the relationship between education level and bike purchases?
+	WITH cte AS
+	 (SELECT Education,
+			 COUNT(CASE
+					   WHEN `Purchased Bike` = 'Yes' THEN 1
+				   END) AS BikePurchases,
+			 COUNT(CASE
+					   WHEN `Purchased Bike` = 'No' THEN 1
+				   END) AS NoBikePurchases
+	  FROM bike_sale_explanatory_analysis
+	  GROUP BY Education)
+	SELECT Education,
+		   BikePurchases,
+		   NoBikePurchases,
+		   BikePurchases + NoBikePurchases AS sum_customer,
+		   ROUND((BikePurchases / (BikePurchases + NoBikePurchases) * 100),2) AS PurchasedPercentage
+	FROM cte
+	GROUP BY Education,
+			 BikePurchases,
+			 NoBikePurchases;
+	
+	-- Bachelor tends to buy more bikes
+	-- Bachelors	169	142	311	54.3408
+	-- Partial College	127	151	278	45.6835
+	-- High School	82	102	184	44.5652
+	-- Partial High School	22	56	78	28.2051
+	-- Graduate Degree	95	80	175	54.2857
+	This SQL query determines which occupation groups are most likely to purchase bikes by analyzing bike purchase behavior across different occupations.
+	-- Which occupation groups are most likely to purchase bikes?
+	WITH cte AS
+	 (SELECT Occupation,
+			 COUNT(CASE
+					   WHEN `Purchased Bike` = 'Yes' THEN 1
+				   END) AS BikePurchases,
+			 COUNT(CASE
+					   WHEN `Purchased Bike` = 'No' THEN 1
+				   END) AS NoBikePurchases
+	  FROM bike_sale_explanatory_analysis
+	  GROUP BY Occupation)
+	SELECT Occupation,
+		   BikePurchases,
+		   NoBikePurchases,
+		   BikePurchases + NoBikePurchases AS sum_customer,
+		   ROUND((BikePurchases / (BikePurchases + NoBikePurchases) * 100),2)AS PurchasedPercentage
+	FROM cte
+	GROUP BY Occupation,
+			 BikePurchases,
+			 NoBikePurchases
+	ORDER BY PurchasedPercentage DESC;
+	
+	-- Professional	150	130	280	53.5714
+	-- Clerical	95	92	187	50.8021
+	-- Manual	59	67	126	46.8254
+	-- Skilled Manual	118	141	259	45.5598
+	-- Management	73	101	174	41.9540
+	-- Professional Clerical have a high percentage that the other occupation
+</code></pre>
+
+<!--Hide
+									</section>
+
+									<section>
+										<h3 class="major">Lists</h3>
+										<div class="row">
+											<div class="col-6 col-12-medium">
+												<h4>Unordered</h4>
+												<ul>
+													<li>Dolor pulvinar etiam.</li>
+													<li>Sagittis adipiscing.</li>
+													<li>Felis enim feugiat.</li>
+												</ul>
+												<h4>Alternate</h4>
+												<ul class="alt">
+													<li>Dolor pulvinar etiam.</li>
+													<li>Sagittis adipiscing.</li>
+													<li>Felis enim feugiat.</li>
+												</ul>
+											</div>
+											<div class="col-6 col-12-medium">
+												<h4>Ordered</h4>
+												<ol>
+													<li>Dolor pulvinar etiam.</li>
+													<li>Etiam vel felis viverra.</li>
+													<li>Felis enim feugiat.</li>
+													<li>Dolor pulvinar etiam.</li>
+													<li>Etiam vel felis lorem.</li>
+													<li>Felis enim et feugiat.</li>
+												</ol>
+												<h4>Icons</h4>
+												<ul class="icons">
+													<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+													<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+													<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+													<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+												</ul>
+											</div>
+										</div>
+										<h4>Actions</h4>
+										<div class="row">
+											<div class="col-6 col-12-medium">
+												<ul class="actions">
+													<li><a href="#" class="button primary">Default</a></li>
+													<li><a href="#" class="button">Default</a></li>
+												</ul>
+												<ul class="actions small">
+													<li><a href="#" class="button primary small">Small</a></li>
+													<li><a href="#" class="button small">Small</a></li>
+												</ul>
+												<ul class="actions stacked">
+													<li><a href="#" class="button primary">Default</a></li>
+													<li><a href="#" class="button">Default</a></li>
+												</ul>
+												<ul class="actions stacked small">
+													<li><a href="#" class="button primary small">Small</a></li>
+													<li><a href="#" class="button small">Small</a></li>
+												</ul>
+											</div>
+											<div class="col-6 col-12-medium">
+												<ul class="actions stacked">
+													<li><a href="#" class="button primary fit">Default</a></li>
+													<li><a href="#" class="button fit">Default</a></li>
+												</ul>
+												<ul class="actions stacked small">
+													<li><a href="#" class="button primary small fit">Small</a></li>
+													<li><a href="#" class="button small fit">Small</a></li>
+												</ul>
+											</div>
+										</div>
+								
+									<h4>Pagination</h4>
+								-->
+										<ul class="pagination">
+											<li><a href="#" id="prevButton" class="button small disabled">Prev</a></li>
+
+											<li><a href="elements.html" class="page" data-page="1">1</a></li>
+    										<li><a href="elementspage2.html" class="page" data-page="2">2</a></li>
+    										<li><a href="elementspage3.html" class="page active" data-page="3">3</a></li>
+											
+											<!--
+											<li><span>&hellip;</span></li>
+											<li><a href="#" class="page">8</a></li>
+											<li><a href="#" class="page">9</a></li>
+											<li><a href="#" class="page">10</a></li>
+											-->
+
+											<li><a href="#" id="nextButton" class="button small">Next</a></li>
+										</ul>
+									</section>
+<!-- Hide
+									<section>
+										<h3 class="major">Table</h3>
+										<h4>Default</h4>
+										<div class="table-wrapper">
+											<table>
+												<thead>
+													<tr>
+														<th>Name</th>
+														<th>Description</th>
+														<th>Price</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>Item One</td>
+														<td>Ante turpis integer aliquet porttitor.</td>
+														<td>29.99</td>
+													</tr>
+													<tr>
+														<td>Item Two</td>
+														<td>Vis ac commodo adipiscing arcu aliquet.</td>
+														<td>19.99</td>
+													</tr>
+													<tr>
+														<td>Item Three</td>
+														<td> Morbi faucibus arcu accumsan lorem.</td>
+														<td>29.99</td>
+													</tr>
+													<tr>
+														<td>Item Four</td>
+														<td>Vitae integer tempus condimentum.</td>
+														<td>19.99</td>
+													</tr>
+													<tr>
+														<td>Item Five</td>
+														<td>Ante turpis integer aliquet porttitor.</td>
+														<td>29.99</td>
+													</tr>
+												</tbody>
+												<tfoot>
+													<tr>
+														<td colspan="2"></td>
+														<td>100.00</td>
+													</tr>
+												</tfoot>
+											</table>
+										</div>
+
+										<h4>Alternate</h4>
+										<div class="table-wrapper">
+											<table class="alt">
+												<thead>
+													<tr>
+														<th>Name</th>
+														<th>Description</th>
+														<th>Price</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>Item One</td>
+														<td>Ante turpis integer aliquet porttitor.</td>
+														<td>29.99</td>
+													</tr>
+													<tr>
+														<td>Item Two</td>
+														<td>Vis ac commodo adipiscing arcu aliquet.</td>
+														<td>19.99</td>
+													</tr>
+													<tr>
+														<td>Item Three</td>
+														<td> Morbi faucibus arcu accumsan lorem.</td>
+														<td>29.99</td>
+													</tr>
+													<tr>
+														<td>Item Four</td>
+														<td>Vitae integer tempus condimentum.</td>
+														<td>19.99</td>
+													</tr>
+													<tr>
+														<td>Item Five</td>
+														<td>Ante turpis integer aliquet porttitor.</td>
+														<td>29.99</td>
+													</tr>
+												</tbody>
+												<tfoot>
+													<tr>
+														<td colspan="2"></td>
+														<td>100.00</td>
+													</tr>
+												</tfoot>
+											</table>
+										</div>
+									</section>
+
+									<section>
+										<h3 class="major">Buttons</h3>
+										<ul class="actions">
+											<li><a href="#" class="button primary">Primary</a></li>
+											<li><a href="#" class="button">Default</a></li>
+										</ul>
+										<ul class="actions">
+											<li><a href="#" class="button large">Large</a></li>
+											<li><a href="#" class="button small">Small</a></li>
+										</ul>
+										<ul class="actions fit">
+											<li><a href="#" class="button fit">Fit</a></li>
+											<li><a href="#" class="button primary fit">Fit</a></li>
+											<li><a href="#" class="button fit">Fit</a></li>
+										</ul>
+										<ul class="actions fit small">
+											<li><a href="#" class="button primary fit small">Fit + Small</a></li>
+											<li><a href="#" class="button fit small">Fit + Small</a></li>
+											<li><a href="#" class="button primary fit small">Fit + Small</a></li>
+										</ul>
+										<ul class="actions">
+											<li><a href="#" class="button primary icon solid fa-download">Icon</a></li>
+											<li><a href="#" class="button icon solid fa-download">Icon</a></li>
+										</ul>
+										<ul class="actions">
+											<li><span class="button primary disabled">Disabled</span></li>
+											<li><span class="button disabled">Disabled</span></li>
+										</ul>
+									</section>
+
+									<section>
+										<h3 class="major">Form</h3>
+										<form method="post" action="#">
+											<div class="row gtr-uniform">
+												<div class="col-6 col-12-xsmall">
+													<label for="demo-name">Name</label>
+													<input type="text" name="demo-name" id="demo-name" value="" />
+												</div>
+												<div class="col-6 col-12-xsmall">
+													<label for="demo-email">Email</label>
+													<input type="email" name="demo-email" id="demo-email" value="" />
+												</div>
+												<div class="col-12">
+													<label for="demo-category">Category</label>
+													<select name="demo-category" id="demo-category">
+														<option value="">-</option>
+														<option value="1">Manufacturing</option>
+														<option value="1">Shipping</option>
+														<option value="1">Administration</option>
+														<option value="1">Human Resources</option>
+													</select>
+												</div>
+												<div class="col-4 col-12-small">
+													<input type="radio" id="demo-priority-low" name="demo-priority" checked>
+													<label for="demo-priority-low">Low Priority</label>
+												</div>
+												<div class="col-4 col-12-small">
+													<input type="radio" id="demo-priority-normal" name="demo-priority">
+													<label for="demo-priority-normal">Normal Priority</label>
+												</div>
+												<div class="col-4 col-12-small">
+													<input type="radio" id="demo-priority-high" name="demo-priority">
+													<label for="demo-priority-high">High Priority</label>
+												</div>
+												<div class="col-6 col-12-small">
+													<input type="checkbox" id="demo-copy" name="demo-copy">
+													<label for="demo-copy">Email me a copy</label>
+												</div>
+												<div class="col-6 col-12-small">
+													<input type="checkbox" id="demo-human" name="demo-human" checked>
+													<label for="demo-human">Not a robot</label>
+												</div>
+												<div class="col-12">
+													<label for="demo-message">Message</label>
+													<textarea name="demo-message" id="demo-message" rows="6"></textarea>
+												</div>
+												<div class="col-12">
+													<ul class="actions">
+														<li><input type="submit" value="Send Message" class="primary" /></li>
+														<li><input type="reset" value="Reset" /></li>
+													</ul>
+												</div>
+											</div>
+										</form>
+									</section>
+
+									<section>
+										<h3 class="major">Image</h3>
+										<h4>Fit</h4>
+										<div class="box alt">
+											<div class="row gtr-uniform">
+												<div class="col-12"><span class="image fit"><img src="images/pic08.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic05.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic06.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic07.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic07.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic05.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic06.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic06.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic07.jpg" alt="" /></span></div>
+												<div class="col-4"><span class="image fit"><img src="images/pic05.jpg" alt="" /></span></div>
+											</div>
+										</div>
+										<h4>Left &amp; Right</h4>
+										<p><span class="image left"><img src="images/pic01.jpg" alt="" /></span>Morbi mattis mi consectetur tortor elementum, varius pellentesque velit convallis. Aenean tincidunt lectus auctor mauris maximus, ac scelerisque ipsum tempor. Duis vulputate ex et ex tincidunt, quis lacinia velit aliquet. Duis non efficitur nisi, id malesuada justo. Maecenas sagittis felis ac sagittis semper. Curabitur purus leo, tempus sed finibus eget, fringilla quis risus. Maecenas et lorem quis sem varius sagittis et a est. Maecenas iaculis iaculis sem. Donec vel dolor at arcu tincidunt bibendum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce ut aliquet justo. Donec id neque ipsum. Integer eget ultricies odio. Nam vel ex a orci fringilla tincidunt. Aliquam eleifend ligula non velit accumsan cursus. Etiam ut gravida sapien. Morbi mattis mi consectetur tortor elementum, varius pellentesque velit convallis. Aenean tincidunt lectus auctor mauris maximus, ac scelerisque ipsum tempor. Duis vulputate ex et ex tincidunt, quis lacinia velit aliquet. Duis non efficitur nisi, id malesuada justo. Maecenas sagittis felis ac sagittis semper. Curabitur purus leo, tempus sed finibus eget, fringilla quis risus. Maecenas et lorem quis sem varius sagittis et a est. Maecenas iaculis iaculis sem. Donec vel dolor at arcu tincidunt bibendum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce ut aliquet justo. Donec id neque ipsum. Integer eget ultricies odio. Nam vel ex a orci fringilla tincidunt. Aliquam eleifend ligula non velit accumsan cursus. Etiam ut gravida sapien.</p>
+										<p><span class="image right"><img src="images/pic02.jpg" alt="" /></span>Vestibulum ultrices risus velit, sit amet blandit massa auctor sit amet. Sed eu lectus sem. Phasellus in odio at ipsum porttitor mollis id vel diam. Praesent sit amet posuere risus, eu faucibus lectus. Vivamus ex ligula, tempus pulvinar ipsum in, auctor porta quam. Proin nec dui cursus, posuere dui eget interdum. Fusce lectus magna, sagittis at facilisis vitae, pellentesque at etiam. Quisque posuere leo quis sem commodo, vel scelerisque nisi scelerisque. Suspendisse id quam vel tortor tincidunt suscipit. Nullam auctor orci eu dolor consectetur, interdum ullamcorper ante tincidunt. Mauris felis nec felis elementum varius. Nam sapien ante, varius in pulvinar vitae, rhoncus id massa. Donec varius ex in mauris ornare, eget euismod urna egestas. Etiam lacinia tempor ipsum, sodales porttitor justo. Aliquam dolor quam, semper in tortor eu, volutpat efficitur quam. Fusce nec fermentum nisl. Aenean erat diam, tempus aliquet erat. Etiam iaculis nulla ipsum, et pharetra libero rhoncus ut. Phasellus rutrum cursus velit, eget condimentum nunc blandit vel. In at pulvinar lectus. Morbi diam ante, vulputate et imperdiet eget, fermentum non dolor. Ut eleifend sagittis tincidunt. Sed viverra commodo mi, ac rhoncus justo. Duis neque ligula, elementum ut enim vel, posuere finibus justo. Vivamus facilisis maximus nibh quis pulvinar. Quisque hendrerit in ipsum id tellus facilisis fermentum. Proin mauris dui.</p>
+									</section>
+
+								</div>
+							</div>
+
+					</section>
+				-->
+				<!-- Hide Footer
+					<section id="footer">
+						<div class="inner">
+							<h2 class="major">Get in touch</h2>
+							<p>Cras mattis ante fermentum, malesuada neque vitae, eleifend erat. Phasellus non pulvinar erat. Fusce tincidunt, nisl eget mattis egestas, purus ipsum consequat orci, sit amet lobortis lorem lacus in tellus. Sed ac elementum arcu. Quisque placerat auctor laoreet.</p>
+							<form method="post" action="#">
+								<div class="fields">
+									<div class="field">
+										<label for="name">Name</label>
+										<input type="text" name="name" id="name" />
+									</div>
+									<div class="field">
+										<label for="email">Email</label>
+										<input type="email" name="email" id="email" />
+									</div>
+									<div class="field">
+										<label for="message">Message</label>
+										<textarea name="message" id="message" rows="4"></textarea>
+									</div>
+								</div>
+								<ul class="actions">
+									<li><input type="submit" value="Send Message" /></li>
+								</ul>
+							</form>
+							<ul class="contact">
+								<li class="icon solid fa-home">
+									Untitled Inc<br />
+									1234 Somewhere Road Suite #2894<br />
+									Nashville, TN 00000-0000
+								</li>
+								<li class="icon solid fa-phone">(000) 000-0000</li>
+								<li class="icon solid fa-envelope"><a href="#">information@untitled.tld</a></li>
+								<li class="icon brands fa-twitter"><a href="#">twitter.com/untitled-tld</a></li>
+								<li class="icon brands fa-facebook-f"><a href="#">facebook.com/untitled-tld</a></li>
+								<li class="icon brands fa-instagram"><a href="#">instagram.com/untitled-tld</a></li>
+							</ul>
+							<ul class="copyright">
+								<li>&copy; Untitled Inc. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</section>
+				-->
+
+			</div>
+
+			<script>
+				document.addEventListener("DOMContentLoaded", function () {
+					const prevButton = document.getElementById("prevButton");
+					const nextButton = document.getElementById("nextButton");
+			
+					// Handle "Next" button click
+					nextButton.addEventListener("click", function (event) {
+						event.preventDefault();
+						navigateToPage(1); // Move forward by 1
+					});
+			
+					// Handle "Prev" button click
+					prevButton.addEventListener("click", function (event) {
+						event.preventDefault();
+						navigateToPage(-1); // Move backward by 1
+					});
+			
+					function navigateToPage(direction) {
+						const currentPage = document.querySelector(".page.active");
+						const currentPageNumber = parseInt(currentPage.getAttribute("data-page"), 10);
+						const targetPageNumber = currentPageNumber + direction;
+			
+						// Find the target page element
+						const targetPage = document.querySelector(`.page[data-page="${targetPageNumber}"]`);
+			
+						if (targetPage) {
+							// Update active page styling
+							currentPage.classList.remove("active");
+							targetPage.classList.add("active");
+			
+							// Navigate to the href of the target page
+							window.location.href = targetPage.getAttribute("href");
+						} else {
+							console.log("No more pages to navigate.");
+						}
+					}
+			
+					function updateButtonStates(currentPageNumber) {
+						const totalPages = document.querySelectorAll(".page").length;
+			
+						// Disable "Prev" button if on the first page
+						if (currentPageNumber === 1) {
+							prevButton.classList.add("disabled");
+						} else {
+							prevButton.classList.remove("disabled");
+						}
+			
+						// Disable "Next" button if on the last page
+						if (currentPageNumber === totalPages) {
+							nextButton.classList.add("disabled");
+						} else {
+							nextButton.classList.remove("disabled");
+						}
+					}
+			
+					// Initialize button states on page load
+					const activePageNumber = parseInt(document.querySelector(".page.active").getAttribute("data-page"), 10);
+					updateButtonStates(activePageNumber);
+				});
+			</script>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
