@@ -3625,7 +3625,7 @@ input, select, textarea {
 			font-weight: 200;
 			letter-spacing: 0.1em;
 			line-height: 2;
-			text-transform: capitalize;
+			text-transform: "";
 		}
 
 	@media screen and (max-width: 5000px) {
