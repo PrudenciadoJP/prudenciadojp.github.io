@@ -125,7 +125,7 @@ input, select, textarea {
 
 	body, input, select, textarea {
 		color: #ffffff;
-		font-family: AkkuratMono-Regular, "Source Sans Pro", Helvetica, sans-serif;
+		font-family: AkkuratMono-Regular;
 		font-size: 16.5pt;
 		font-weight: 300;
 		line-height: 1.65;
@@ -2287,7 +2287,7 @@ input, select, textarea {
 			cursor: pointer;
 			display: inline-block;
 			font-size: 1em;
-			font-family: "Source Sans Pro", Helvetica, sans-serif;
+			font-family: AkkuratMono-Regular;
 			text-transform: none;
 			letter-spacing: 0;
 			font-weight: 300;
@@ -3620,7 +3620,7 @@ input, select, textarea {
 		}
 
 		#wrapper > header p {
-			font-family: AkkuratMono-Regular, Raleway, Helvetica, sans-serif;
+			font-family: AkkuratMono-Regular;
 			font-size: 1em;
 			font-weight: 200;
 			letter-spacing: 0.1em;
